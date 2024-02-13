@@ -1,0 +1,13 @@
+[package]
+name = "ogr-rust"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "ogr_rust"
+crate-type = ["cdylib"]
+
+[dependencies]
+num = "0.4.1"
+pyo3 = { version = "0.20.2", features = ["abi3", "abi3-py312"] }
