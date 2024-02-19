@@ -14,6 +14,7 @@ pub(crate) struct Ruler {
 
 }
 
+
 fn dist(a: i128, b: i128) -> i128 {
     i128::abs(a - b)
 }

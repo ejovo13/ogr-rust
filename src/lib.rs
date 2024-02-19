@@ -1,6 +1,7 @@
 use pyo3::prelude::*;
 
 mod rulers;
+mod enumerations;
 
 use rulers::*;
 
