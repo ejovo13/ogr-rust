@@ -14,23 +14,31 @@ pub(crate) struct Ruler {
 
 }
 
+pub type GInt = i128;
 
-fn dist(a: i128, b: i128) -> i128 {
-    i128::abs(a - b)
+fn dist(a: GInt, b: GInt) -> GInt{
+    GInt::abs(a - b)
 }
 
-#[pymethods]
+// #[pymethods]
 impl Ruler {
 
     /// Verify if a sequence of integers satisfies the golomb property.
-    #[staticmethod]
-    fn is_golomb_ruler(sequence: Vec<i128>) -> bool {
+    // #[staticmethod]
+    pub fn is_golomb_ruler(sequence: &[GInt]) -> bool {
 
-        let mut distances: HashSet<i128> = HashSet::new();
+        let mut distances: HashSet<GInt> = HashSet::new();
         let n = sequence.len();
 
         for (lhs_index, lhs) in sequence.iter().enumerate() {
             // for rhs in sequence[]
+            let diff = *lhs;
+            if distances.contains(&diff) {
+                return false
+            } else {
+                distances.insert(diff)
+            };
+
             for rhs in &sequence[(lhs_index + 1)..n] {
                 let diff = dist(*lhs, *rhs);
                 if distances.contains(&diff) {
