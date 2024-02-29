@@ -1,57 +1,32 @@
 //! Define the core Ruler structure and some associated functions.
 
+mod golomb_ruler;
+mod ruler;
+
 use std::collections::HashSet;
 
-use num::Integer;
 use pyo3::{exceptions, prelude::*};
-use pyo3::{create_exception, Python, PyErr};
+use pyo3::create_exception;
+
+pub use ruler::Ruler;
+pub use golomb_ruler::GolombRuler;
 
 create_exception!(ogr_rust, MyError, pyo3::exceptions::PyException);
 
-/// Implementation of a Golomb Ruler.
+
+
+#[derive(Debug, Clone)]
 #[pyclass]
-pub(crate) struct Ruler {
-
+struct Distance {
+    lhs: GInt,
+    rhs: GInt,
+    dist: GInt,
 }
 
-pub type GInt = i128;
+pub(crate) type GInt = i128;
 
-fn dist(a: GInt, b: GInt) -> GInt{
+pub(crate) fn dist(a: GInt, b: GInt) -> GInt{
     GInt::abs(a - b)
-}
-
-// #[pymethods]
-impl Ruler {
-
-    /// Verify if a sequence of integers satisfies the golomb property.
-    // #[staticmethod]
-    pub fn is_golomb_ruler(sequence: &[GInt]) -> bool {
-
-        let mut distances: HashSet<GInt> = HashSet::new();
-        let n = sequence.len();
-
-        for (lhs_index, lhs) in sequence.iter().enumerate() {
-            // for rhs in sequence[]
-            let diff = *lhs;
-            if distances.contains(&diff) {
-                return false
-            } else {
-                distances.insert(diff)
-            };
-
-            for rhs in &sequence[(lhs_index + 1)..n] {
-                let diff = dist(*lhs, *rhs);
-                if distances.contains(&diff) {
-                    return false
-                } else {
-                    distances.insert(diff)
-                };
-            }
-        }
-
-        true
-    }
-
 }
 
 /// Compute the pairwise distances of `sequence` and return the results in a set.
@@ -86,7 +61,7 @@ pub(crate) fn generate_golomb_ruler_naive(order: u32) -> PyResult<Vec<i128>> {
 }
 
 /// Utility function used to check if a candidate should be accepted.
-fn should_accept_candidate(candidate: i128, distances: &HashSet<i128>, prev: &Vec<i128>, order: u32) -> bool {
+fn should_accept_candidate(candidate: i128, distances: &HashSet<i128>, prev: &[i128], order: u32) -> bool {
     for i in 0usize..(order - 1) as usize {
         let gap = dist(candidate, prev[i]);
         if distances.contains(&gap) {
